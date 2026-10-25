@@ -4,7 +4,6 @@ namespace InterviewTestPagination.Models {
     /// <summary>
     /// Model Service layer's main entry-point. 
     /// Should translate high-level commands and data structures into something that can be used by the data source layer.
-    /// TODO: create appropriate method signatures
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface IModelService<T> {
@@ -15,9 +14,15 @@ namespace InterviewTestPagination.Models {
         IModelRepository<T> Repository { get; set; }
 
         /// <summary>
-        /// Example signature of a method that lists entries of model T
+        /// Lists all entries of model T (no paging).
         /// </summary>
         /// <returns></returns>
-        IEnumerable<T> List(/* parameters */);
+        IEnumerable<T> List();
+
+        /// <summary>
+        /// Lists one sorted page of entries of model T, together with the paging metadata.
+        /// </summary>
+        /// <exception cref="System.ArgumentException">for an invalid page size or sort property</exception>
+        PagedResult<T> List(PageRequest request);
     }
 }

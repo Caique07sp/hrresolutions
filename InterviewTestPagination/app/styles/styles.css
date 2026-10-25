@@ -23,3 +23,7 @@ table tr:nth-child(odd) {
 .pagination input {
     width: 30px;
 }
+.sort-indicator {
+    display: inline-block;
+    min-width: 1em;
+}

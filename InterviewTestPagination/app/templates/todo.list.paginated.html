@@ -1,46 +1,36 @@
 ﻿<!-- table of contents -->
 <table>
-    <!-- table:header -->
-    <tr>
-        <!--
+    <thead>
+        <!-- Clicking a header sorts the WHOLE list (server side) by that property: 1st click ascending, then toggles.
+             Only one property at a time; the indicator (▲ ascending / ▼ descending) shows on the active header only.
+             On first load there is no indicator: the list comes sorted by createdDate descending. -->
+        <tr>
+            <th ng-click="sortBy('id')">Id <span class="sort-indicator">{{ sortIndicator('id') }}</span></th>
+            <th ng-click="sortBy('task')">Task <span class="sort-indicator">{{ sortIndicator('task') }}</span></th>
+            <th ng-click="sortBy('createdDate')">Created Date <span class="sort-indicator">{{ sortIndicator('createdDate') }}</span></th>
+        </tr>
+    </thead>
 
-        Sorting by property:
-        - On first load by default the list should come sorted by 'createdDate' descending.
-        - Clicking the header title (text inside <th> element) should sort the list by the corresponding property.
-        - When the user clicks to sort an indicator (e.g. icon, img, word, etc) that indicates the sort order should appear on the right side of the header title.
-        - Clicking the header again should invert the sorting order for that property. The first click should order by the property in ascending order.
-        - The list can be sorted by a single property at a time.
-        - e.g.: list loads for the first time (no indicators displaying beside the table's headers's titles) -> user clicks the 'id' header ->
-        sort list by 'id' property -> show indicator beside the 'id' title indicating the ascending sort order -> user clicks the 'id' header again ->
-        sort list by 'id' in descending order -> show indicator beside the 'id' title indicating the descending sort order ->
-        user clicks on the 'task' header -> sort list only by 'task' property in ascending order ->
-        show indicator beside the 'task' title indicating the ascending sort order -> remove indicator from the 'id' header
-        - PS:
-            . the sort should happen for the whole list (i.e. not just sort the current page)
-            . sort should remain 'active' while navigating in between pages
-            . the indicators don't need to look pretty, they just have to be distinct (ascending from descending) and communicate well what they're doing
-
-        -->
-        <th>Id </th>
-        <th>Task </th>
-        <th>Created Date </th>
-    </tr>
-    
     <!-- table:body -->
-    <!--
-
-    When the list is still loading (first load or any request made to server to fetch a page):
-    - A loading indicator should be displayed instead of the table body to indicate it
-    - It can be any kind of indicator (text, icon, img, etc). 
-    - Dont worry about styling (looking pretty, centralized, etc) it just has to show that the app is still active while the request is being made
-
-    -->
-    <tr ng-repeat="todo in todos track by $index">
-        <td>{{todo.id}}</td>
-        <td>{{todo.task}}</td>
-        <td>{{todo.createdDate | date:'MM/dd/yyyy' }}</td>
-    </tr>
+    <!-- while a request is in flight the body is replaced by the loading indicator -->
+    <tbody ng-if="loading">
+        <tr><td colspan="3">Loading...</td></tr>
+    </tbody>
+    <tbody ng-if="!loading && error">
+        <tr><td colspan="3">{{ error }}</td></tr>
+    </tbody>
+    <tbody ng-if="!loading && !error">
+        <tr ng-repeat="todo in todos track by todo.id">
+            <td>{{todo.id}}</td>
+            <td>{{todo.task}}</td>
+            <td>{{todo.createdDate | date:'MM/dd/yyyy' }}</td>
+        </tr>
+        <tr ng-if="!todos.length"><td colspan="3">No items</td></tr>
+    </tbody>
 </table>
 
 <!-- pagination component -->
-<pagination></pagination>
+<pagination page="paging.page"
+            page-size="paging.pageSize"
+            total-items="paging.totalItems"
+            on-change="load(page, pageSize)"></pagination>

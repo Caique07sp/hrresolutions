@@ -1,26 +1,24 @@
-﻿<!-- TODO: make it a reusable directive (don't worry about style) -->
-<div class="pagination">
+﻿<div class="pagination">
     <div>
         Items per page
-        <select>
-            <!-- select how many items should be displayed per page -->
-            <option>10</option>
-            <option selected="selected">20</option> <!-- default option on first load should be 20 -->
-            <option>30</option>
-            <option>all</option> <!-- disregard pagination: show all the items -->
-        </select>
+        <select ng-model="pageSize"
+                ng-options="option.value as option.label for option in pageSizeOptions"
+                ng-change="changePageSize()"></select>
     </div>
     <div>
-        <button>&lt;&lt;</button> <!-- 'go to first page' button -->
-        <button>&lt;</button> <!-- 'go to previous page' button: can't go lower than 1 -->
-        
-        Page <input type="number" value="1" min="1" /> <!-- input to select page to go to: go to page when input changes value --> of ??total page count here?? <!-- number of pages -->
+        <button type="button" ng-click="goTo(1)" ng-disabled="page <= 1">&lt;&lt;</button>
+        <button type="button" ng-click="goTo(page - 1)" ng-disabled="page <= 1">&lt;</button>
 
-        <button>&gt;</button> <!-- 'go to next page' button: can't go higher than last page number -->
-        <button>&gt;&gt;</button> <!-- 'go to last page' button -->
+        Page <input type="number" min="1" max="{{totalPages()}}"
+                    ng-model="input.page"
+                    ng-model-options="{ debounce: 500, allowInvalid: true }"
+                    ng-change="goToInput()"
+                    ng-blur="resetInput()" /> of {{totalPages()}}
+
+        <button type="button" ng-click="goTo(page + 1)" ng-disabled="page >= totalPages()">&gt;</button>
+        <button type="button" ng-click="goTo(totalPages())" ng-disabled="page >= totalPages()">&gt;&gt;</button>
     </div>
     <div>
-        <span>???total item count here??? items</span> <!-- total number of items -->
+        <span>{{totalItems}} items</span>
     </div>
-
 </div>
