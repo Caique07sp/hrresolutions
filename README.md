@@ -58,14 +58,6 @@ Durante a análise do projeto, foram identificados e corrigidos problemas que af
 - **Identificação dos elementos na lista:** substituição de `track by $index` por `track by todo.id`, permitindo que o AngularJS acompanhe os registros por seus identificadores.
 - **Arquivo de teste não incluído no projeto:** correção da configuração do `.csproj` para permitir que o arquivo de testes fosse compilado e descoberto pelo ambiente de testes.
 
-## Tempo dedicado ao projeto
-
-- **Quinta-feira (22/10): 20:00 às 22:00** — Análise inicial do projeto e início das pesquisas sobre as tecnologias utilizadas.
-- **Sexta-feira (23/10): 18:30 às 23:00** — Estudo dos principais conceitos de C# e ASP.NET Web API, análise da arquitetura existente e início da implementação das funcionalidades de paginação.
-- **Sábado (24/10): 15:00 às 23:00** — Implementação e ajustes da paginação no back-end, incluindo a separação de responsabilidades entre Controller, Service e Repository, além do cálculo do total de páginas e da seleção dos registros.
-- **Domingo (25/10): 14:00 ás 22:00** — Desenvolvimento e ajustes da integração entre o front-end AngularJS e a API, tratamento da ordenação e revisão do comportamento da navegação entre páginas, Investigação e correção de bugs, revisão da implementação, análise dos testes automatizados e elaboração da documentação do projeto. 
-
-
 # Proposta de Arquitetura: Sistema de Gerenciamento Offline
 
 ## Stack de Tecnologias
