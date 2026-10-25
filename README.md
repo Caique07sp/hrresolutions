@@ -29,20 +29,19 @@ O projeto utiliza **AngularJS no front-end** e **C# com ASP.NET Web API 2 no bac
 - **Ordenação segura:** validação das propriedades permitidas antes de ordenar os registros.
 - **Ordenação determinística:** utilização de `ThenBy(Id)` como critério secundário para manter uma ordem consistente em caso de valores iguais.
 - **Validação da página:** tratamento de números de página inválidos ou superiores ao total disponível.
-- **Tratamento de requisições:** retorno de respostas HTTP apropriadas para solicitações válidas ou inválidas.
 ---
 
 ## Decisões técnicas
 
-### Por que utilizar `PageRequest` e `PagedResult<T>`?
+### `PageRequest` e `PagedResult<T>`?
 O `PageRequest` representa os parâmetros enviados para a consulta, como Página solicitada, quantidade de registros por página, propriedade utilizada para ordenação, direção da ordenação.
 O `PagedResult` representa o resultado da consulta, por exemplo:  página atual, o tamanho da página, a quantidade total de registros e o total de páginas.
 
-### Por que separar `Count()` e `List()`?
+### `Count()` e `List()`?
 - **`Count()`:** obtém a quantidade total de registros, permitindo calcular quantas páginas existem.
 - **`List()`:** retorna os registros solicitados, aplicando os critérios de ordenação e paginação.
 
-### Por que utilizar `Skip()` e `Take()`?
+### `Skip()` e `Take()`?
 Esses métodos permitem selecionar um intervalo de registros sem precisar retornar a lista inteira, por exemplo para acessar a segunda página de uma lista com 10 itens por página:
 
 ```
@@ -67,38 +66,25 @@ Durante a análise do projeto, foram identificados e corrigidos problemas que af
 - **Domingo (25/10): 09:00 ás 15:00** — Desenvolvimento e ajustes da integração entre o front-end AngularJS e a API, tratamento da ordenação e revisão do comportamento da navegação entre páginas.
 - **Domingo (25/10): 19:00 às 22:30** — Investigação e correção de bugs, revisão da implementação, análise dos testes automatizados e elaboração da documentação do projeto.
 
-## Estrutura do projeto
 
-```text
-InterviewTestPagination/
-├── App_Start/
-│   └── WebApiConfig.cs
-├── Controllers/
-│   └── TodoController.cs
-├── Models/
-│   ├── IModelRepository.cs
-│   ├── IModelService.cs
-│   ├── PageRequest.cs
-│   ├── PagedResult.cs
-│   └── Todo/
-│       ├── Todo.cs
-│       ├── TodoRepository.cs
-│       └── TodoService.cs
-├── app/
-│   ├── main.js
-│   ├── app.module.js
-│   ├── styles/
-│   │   └── styles.css
-│   └── templates/
-│       ├── pagination.html
-│       └── todo.list.paginated.html
-├── InterviewTestPagination.Tests/
-│   └── Models/
-│       └── TodoServiceTest.cs
-├── index.html
-└── README.md
-```
 
-*A estrutura acima representa os principais arquivos envolvidos na implementação. A organização final pode variar conforme os arquivos existentes na solução.*
+# Proposta de Arquitetura: Sistema de Gerenciamento Offline
 
----
+## Stack de Tecnologias
+
+- **Front-end (App):** React Native com SQLite para armazenamento local, permitindo leitura e gravação imediatas sem internet.
+- **Back-end:** C# com ASP.NET Web API para intermediar as requisições, validar regras e proteger o banco principal.
+- **Banco de Dados:** Servidor SQL existente, que continua como única fonte oficial de dados sem sofrer modificações.
+
+## Fluxo de Funcionamento
+
+- **Primeiro Acesso (Online):** O aplicativo baixa os ativos do servidor em lotes e os armazena no SQLite, registrando a versão inicial de cada um.
+- **Modo Offline:** O usuário consulta, edita ou cria ativos diretamente no banco local, toda alteração é guardada em uma fila interna do dispositivo.
+- **Sincronização:** O aplicativo envia a fila de alterações em lote para o servidor, após o processamento seguro o app solicita apenas os dados que foram modificados por terceiros desde a última conexão.
+- 
+## Resolução de Conflitos
+
+- Utilizei o campo `rowstamp`.
+- Ao enviar uma alteração, o app inclui o `rowstamp` local, o servidor compara com o valor atual do banco de dados.
+- Se os valores forem iguais a gravação é efetuada, se o banco tiver um `rowstamp` superior (indicando que outro usuário ou o sistema online modificou o dado), o servidor bloqueia a operação e devolve a versão mais recente para o cliente revisar.
+
